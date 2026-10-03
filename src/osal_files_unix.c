@@ -37,12 +37,17 @@
 
 /* definitions for system directories to search when looking for mupen64plus plugins */
 #if defined(PLUGINDIR)
-  const int   osal_libsearchdirs = 5;
-  const char *osal_libsearchpath[5] = { PLUGINDIR, "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus", "/usr/lib64/mupen64plus/", "./" };
+  const int   osal_libsearchdirs = 4;
+  const char *osal_libsearchpath[4] = { PLUGINDIR, "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus", "/usr/lib64/mupen64plus/" };
 #else
-  const int   osal_libsearchdirs = 3;
-  const char *osal_libsearchpath[3] = { "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus", "./" };
+  const int   osal_libsearchdirs = 2;
+  const char *osal_libsearchpath[2] = { "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus" };
 #endif
+
+const char *osal_get_default_plugin_dir(void)
+{
+    return NULL;
+}
 
 osal_lib_search *osal_library_search(const char *searchpath)
 {
@@ -111,4 +116,3 @@ void osal_free_lib_list(osal_lib_search *head)
         head = next;
     }
 }
-

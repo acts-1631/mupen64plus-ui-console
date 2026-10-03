@@ -34,8 +34,30 @@
 #include "osal_preproc.h"
 
 /* definitions for system directories to search when looking for mupen64plus plugins */
-const int  osal_libsearchdirs = 1;
-const char *osal_libsearchpath[1] = { ".\\" };
+const int  osal_libsearchdirs = 0;
+const char *osal_libsearchpath[1] = { NULL };
+
+const char *osal_get_default_plugin_dir(void)
+{
+    static char path[PATH_MAX];
+    char *separator;
+    DWORD length = GetModuleFileNameA(NULL, path, sizeof(path));
+
+    if (length == 0 || length >= sizeof(path))
+        return NULL;
+
+    separator = strrchr(path, '\\');
+    if (separator == NULL)
+        separator = strrchr(path, '/');
+    if (separator == NULL)
+        return NULL;
+
+    if (separator == path + 2 && path[1] == ':')
+        separator[1] = 0;
+    else
+        *separator = 0;
+    return path;
+}
 
 osal_lib_search *osal_library_search(const char *searchpath)
 {

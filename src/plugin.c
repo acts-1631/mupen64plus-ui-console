@@ -125,7 +125,8 @@ m64p_error PluginSearchLoad(m64p_handle ConfigUI)
     if (lib_filelist == NULL)
     {
         const char *plugindir = (*ConfigGetParamString)(ConfigUI, "PluginDir");
-        lib_filelist = osal_library_search(plugindir);
+        if (plugindir != NULL && plugindir[0] != 0)
+            lib_filelist = osal_library_search(plugindir);
     }
 
     /* for MacOS, look for plugins in the Frameworks folder of the app bundle */
@@ -150,6 +151,14 @@ m64p_error PluginSearchLoad(m64p_handle ConfigUI)
         }
     }
 #endif
+
+    /* if no plugin directory was configured, use the platform's safe default */
+    if (lib_filelist == NULL)
+    {
+        const char *plugindir = osal_get_default_plugin_dir();
+        if (plugindir != NULL)
+            lib_filelist = osal_library_search(plugindir);
+    }
 
     /* if still no plugins found, search some common system folders */
     if (lib_filelist == NULL)
@@ -286,4 +295,3 @@ m64p_error PluginUnload(void)
 
     return M64ERR_SUCCESS;
 }
-

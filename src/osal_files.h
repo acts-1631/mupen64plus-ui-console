@@ -57,8 +57,8 @@ extern const int   osal_libsearchdirs;
 extern const char *osal_libsearchpath[];
 
 /* functions for searching for shared libraries in a given directory */
+extern const char     *osal_get_default_plugin_dir(void);
 extern osal_lib_search *osal_library_search(const char *searchpath);
 extern void             osal_free_lib_list(osal_lib_search *head);
 
 #endif /* #define OSAL_FILES_H */
-

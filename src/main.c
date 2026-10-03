@@ -54,7 +54,7 @@
 #define PIF_ROM_SIZE 2048
 
 /* Version number for UI-Console config section parameters */
-#define CONFIG_PARAM_VERSION     1.00
+#define CONFIG_PARAM_VERSION     1.01
 
 /** global variables **/
 int    g_Verbose = 0;
@@ -289,6 +289,13 @@ static m64p_error OpenConfigurationHandles(void)
     else if ((CONFIG_PARAM_VERSION - fConfigParamsVersion) >= 0.0001f)
     {
         /* handle upgrades */
+        if (fConfigParamsVersion < 1.01f)
+        {
+            const char *PluginDir = ConfigGetParamString(l_ConfigUI, "PluginDir");
+            if (PluginDir != NULL &&
+                (strcmp(PluginDir, "./") == 0 || strcmp(PluginDir, ".\\") == 0))
+                ConfigSetParameter(l_ConfigUI, "PluginDir", M64TYPE_STRING, "");
+        }
         float fVersion = CONFIG_PARAM_VERSION;
         ConfigSetParameter(l_ConfigUI, "Version", M64TYPE_FLOAT, &fVersion);
         DebugMessage(M64MSG_INFO, "Updating parameter set version in 'UI-Console' config section to %.2f", fVersion);
@@ -297,7 +304,7 @@ static m64p_error OpenConfigurationHandles(void)
 
     /* Set default values for my Config parameters */
     (*ConfigSetDefaultFloat)(l_ConfigUI, "Version", CONFIG_PARAM_VERSION,  "Mupen64Plus UI-Console config parameter set version number.  Please don't change this version number.");
-    (*ConfigSetDefaultString)(l_ConfigUI, "PluginDir", OSAL_CURRENT_DIR, "Directory in which to search for plugins");
+    (*ConfigSetDefaultString)(l_ConfigUI, "PluginDir", "", "Directory in which to search for plugins");
     (*ConfigSetDefaultString)(l_ConfigUI, "VideoPlugin", "mupen64plus-video-rice" OSAL_DLL_EXTENSION, "Filename of video plugin");
     (*ConfigSetDefaultString)(l_ConfigUI, "AudioPlugin", "mupen64plus-audio-sdl" OSAL_DLL_EXTENSION, "Filename of audio plugin");
     (*ConfigSetDefaultString)(l_ConfigUI, "InputPlugin", "mupen64plus-input-sdl" OSAL_DLL_EXTENSION, "Filename of input plugin");
@@ -1160,4 +1167,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
